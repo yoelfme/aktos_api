@@ -1,0 +1,25 @@
+services:
+  web:
+    build: .
+    command: poetry run python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://aktos_user:aktos_password@db/aktos_db
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    ports:
+      - "5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=aktos_db
+      - POSTGRES_USER=aktos_user
+      - POSTGRES_PASSWORD=aktos_password
+
+volumes:
+  postgres_data:

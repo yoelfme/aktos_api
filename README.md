@@ -69,18 +69,20 @@ You can test the API using [curl](https://curl.se/) or any API testing tool like
    curl "http://localhost:8000/accounts?min_balance=100.23&status=collected&consumer_name=john"
    ```
 
+### Running Unit Tests
+
+To run the unit tests for this project:
+
+```
+docker compose exec web poetry run python manage.py test
+```
+
 ## Development
 
 To run the development server:
 
 ```
 docker compose up
-```
-
-To run tests:
-
-```
-docker compose exec web poetry run python manage.py test
 ```
 
 ## Troubleshooting
@@ -98,3 +100,36 @@ Please read CONTRIBUTING.md for details on our code of conduct, and the process 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE.md file for details.
+
+## Data Model
+
+Our application's data structure is modeled as follows:
+
+```mermaid
+erDiagram
+    CLIENT {
+        string client_reference_no PK
+        datetime created_at
+        datetime updated_at
+    }
+    CONSUMER {
+        string ssn PK
+        string name
+        text address
+        datetime created_at
+        datetime updated_at
+    }
+    ACCOUNT {
+        uuid account_id PK
+        decimal balance
+        string status
+        datetime created_at
+        datetime updated_at
+        string client_reference_no FK
+        string ssn FK
+    }
+    CLIENT ||--o{ ACCOUNT : has
+    CONSUMER ||--o{ ACCOUNT : has
+```
+
+This diagram illustrates the relationships between our main entities: CLIENT, CONSUMER, and ACCOUNT. Each CLIENT and CONSUMER can have multiple ACCOUNTs, while each ACCOUNT is associated with one CLIENT and one CONSUMER.
